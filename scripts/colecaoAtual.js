@@ -13,9 +13,9 @@ let paginaAtual = 1;
 const rootElement = document.querySelector("#root");
 const rootLottie = document.querySelector("#root-lottie");
 const paginacaoElement = document.querySelector(".paginacao");
-const rootElementModelo = document.querySelector("#modelo");
 const botaoSearch = document.querySelector("#button-search");
 const valueInput = document.querySelector("#input");
+const searchTypeElement = document.querySelector("#filter-type-select");
 botaoSearch === null || botaoSearch === void 0 ? void 0 : botaoSearch.addEventListener("click", () => {
     valueInput.value;
     pesquisaPorElemento(valueInput.value);
@@ -44,9 +44,7 @@ function render() {
 			`;
             }
             const data = yield getData();
-            // renderPaginacaoButton(data.length);
             const paginated = paginacao(data, paginaAtual);
-            console.log("ihi", data);
             document.getElementById("paginacao").style.display = "block";
             if (rootElement) {
                 rootLottie.innerHTML = "";
@@ -62,19 +60,6 @@ function render() {
 				`;
                 });
             }
-            // if (rootElement) {
-            // 	rootElement.innerHTML = "";
-            // 	for (var i = 0; i < 200; i++) {
-            // 		rootElement.innerHTML += `
-            // 			<div class="item-wrapper">
-            // 			<img class="imagem" src=${data[i].urlImage}></img>
-            // 			<div class="text-container">
-            // 				<h3>${data[i].Name}</h2>
-            // 			</div>
-            // 			</div>
-            // 		`;
-            // 	}
-            // }
         }
         catch (_a) {
             if (rootLottie) {
@@ -88,133 +73,151 @@ function render() {
             }
         }
         renderizaButtonContainerReceita();
-        // const data: Receita[] = await getData();
-        // console.log("ihi", data);
-        // data.forEach((item) => {
-        // 	console.log("oi", item.Name, item.urlImage);
-        // });
-        //LOTIIE loading:
-        // if (rootLottie) {
-        // 	rootLottie.innerHTML = "";
-        // 	rootLottie.innerHTML += `
-        // 		<div class="lottie-container">
-        // 			<lottie-player src="./lottie/loading.json" background="transparent"  speed="1"  style="width: 300px; height: 300px;" loop controls autoplay></lottie-player>
-        // 		</div>
-        // 	`;
-        // }
-        // if (rootElement) {
-        // 	rootElement.innerHTML = "";
-        // 	for (var i = 0; i < 200; i++) {
-        // 		rootElement.innerHTML += `
-        // 		<div class="item-wrapper">
-        // 		<img class="imagem" src=${data[i].urlImage}></img>
-        // 		<div class="text-container">
-        // 			<h3>${data[i].Name}</h2>
-        // 		</div>
-        // 		</div>
-        // 	`;
-        // 	}
-        // }
-        // if (rootElement) {
-        // 	rootElement.innerHTML = "";
-        // 	data.forEach((item) => {
-        // 		rootElement.innerHTML += `
-        //     <div class="item-wrapper">
-        // 		<img class="imagem" src=${item.urlImage}></img>
-        // 		<div class="text-container">
-        // 			<h3>${item.Name}</h2>
-        // 		</div>
-        //     </div>
-        //   `;
-        // 	});
-        // }
     });
 }
 function cortandoArrayIngredientes(value) {
     return value.split(",");
 }
-function pesquisaPorElemento(ingredientes) {
+function pesquisaPorElemento(value) {
     return __awaiter(this, void 0, void 0, function* () {
-        const buttonConteinerReceita = document.querySelector("#item-wrapper");
-        buttonConteinerReceita === null || buttonConteinerReceita === void 0 ? void 0 : buttonConteinerReceita.addEventListener("click", () => {
-            console.log("oinnn");
-        });
-        try {
-            console.log("entrou");
-            rootElement.innerHTML = "";
-            document.getElementById("paginacao").style.display = "none";
-            if (rootLottie) {
-                rootLottie.innerHTML = "";
-                rootLottie.innerHTML += `
-			<div class="lottie-container">
-			<lottie-player src="./lottie/loading.json" background="transparent"  speed="3"  style="width: 300px; height: 300px;" loop autoplay></lottie-player>
-			</div>
-			`;
-            }
-            const data = yield getData();
-            const receitasFiltradasporIngredientes = data.filter((receita) => {
-                const quantidadeIngredientes = cortandoArrayIngredientes(ingredientes).length > 1;
-                if (!quantidadeIngredientes) {
-                    const ingrediente = receita.Ingredients.filter((item) => {
-                        return item.toLowerCase().includes(ingredientes.toLowerCase());
-                    });
-                    return ingrediente.length ? receita : false;
+        const filterTypeValue = searchTypeElement.value;
+        if (filterTypeValue === "receita") {
+            try {
+                rootElement.innerHTML = "";
+                document.getElementById("paginacao").style.display = "none";
+                if (rootLottie) {
+                    rootLottie.innerHTML = "";
+                    rootLottie.innerHTML += `
+				<div class="lottie-container">
+				<lottie-player src="./lottie/loading.json" background="transparent"  speed="3"  style="width: 300px; height: 300px;" loop autoplay></lottie-player>
+				</div>
+				`;
                 }
-                if (quantidadeIngredientes) {
-                    let acumulador = [];
-                    const arrayIngredientes = cortandoArrayIngredientes(ingredientes);
-                    for (let i = 0; i < arrayIngredientes.length; i++) {
-                        for (let j = 0; j < receita.Ingredients.length; j++) {
-                            if (receita.Ingredients[j].includes(arrayIngredientes[i])) {
-                                acumulador.push(receita.Ingredients[j]);
-                            }
-                        }
+                const data = yield getData();
+                const receitasFiltradasporNome = data.filter((receita, index) => {
+                    let receitaNome = [];
+                    if (receita.Name.toLowerCase().includes(value.toLowerCase())) {
+                        return (receitaNome = data[index]);
                     }
-                    if (acumulador.length === arrayIngredientes.length)
-                        return true;
+                });
+                if (receitasFiltradasporNome.length === 0) {
+                    if (rootLottie) {
+                        rootLottie.innerHTML = "";
+                        document.getElementById("paginacao").style.display = "none";
+                        rootLottie.innerHTML += `
+						<div class="lottie-container">
+						<lottie-player src="./lottie/error.json" background="transparent"  speed="1"  style="width: 300px; height: 300px;" loop autoplay></lottie-player>
+						</div>
+					`;
+                    }
                 }
-            });
-            console.log("saiu");
-            if (receitasFiltradasporIngredientes.length === 0) {
+                else {
+                    if (rootElement) {
+                        document.getElementById("paginacao").style.display = "none";
+                        rootLottie.innerHTML = "";
+                        rootElement.innerHTML = "";
+                        receitasFiltradasporNome.forEach((item) => {
+                            rootElement.innerHTML += `
+						<button class="item-wrapper" id="${item.Name}""=>
+							<img class="imagem" src=${item.urlImage}></img>
+							<div class="text-container">
+								<h3>${item.Name}</h2>
+							</div>
+						</button>
+				`;
+                        });
+                    }
+                }
+            }
+            catch (_a) {
                 if (rootLottie) {
                     rootLottie.innerHTML = "";
                     document.getElementById("paginacao").style.display = "none";
                     rootLottie.innerHTML += `
 					<div class="lottie-container">
-					<lottie-player src="./lottie/error.json" background="transparent"  speed="1"  style="width: 300px; height: 300px;" loop autoplay></lottie-player>
+					<lottie-player src="./lottie/error.json" background="transparent"  speed="1"  style="width: 300px; height: 300px;" loop controls autoplay></lottie-player>
 					</div>
 				`;
                 }
             }
-            else {
-                if (rootElement) {
-                    document.getElementById("paginacao").style.display = "none";
+        }
+        else {
+            try {
+                rootElement.innerHTML = "";
+                document.getElementById("paginacao").style.display = "none";
+                if (rootLottie) {
                     rootLottie.innerHTML = "";
-                    rootElement.innerHTML = "";
-                    receitasFiltradasporIngredientes.forEach((item) => {
-                        rootElement.innerHTML += `
-					<button class="item-wrapper" id="${item.Name}""=>
-						<img class="imagem" src=${item.urlImage}></img>
-						<div class="text-container">
-							<h3>${item.Name}</h2>
+                    rootLottie.innerHTML += `
+				<div class="lottie-container">
+				<lottie-player src="./lottie/loading.json" background="transparent"  speed="3"  style="width: 300px; height: 300px;" loop autoplay></lottie-player>
+				</div>
+				`;
+                }
+                const data = yield getData();
+                const receitasFiltradasporIngredientes = data.filter((receita) => {
+                    const quantidadeIngredientes = cortandoArrayIngredientes(value).length > 1;
+                    if (!quantidadeIngredientes) {
+                        const ingrediente = receita.Ingredients.filter((item) => {
+                            return item.toLowerCase().includes(value.toLowerCase());
+                        });
+                        return ingrediente.length ? receita : false;
+                    }
+                    if (quantidadeIngredientes) {
+                        let acumulador = [];
+                        const arrayIngredientes = cortandoArrayIngredientes(value);
+                        for (let i = 0; i < arrayIngredientes.length; i++) {
+                            for (let j = 0; j < receita.Ingredients.length; j++) {
+                                if (receita.Ingredients[j].includes(arrayIngredientes[i])) {
+                                    acumulador.push(receita.Ingredients[j]);
+                                }
+                            }
+                        }
+                        if (acumulador.length === arrayIngredientes.length)
+                            return true;
+                    }
+                });
+                if (receitasFiltradasporIngredientes.length === 0) {
+                    if (rootLottie) {
+                        rootLottie.innerHTML = "";
+                        document.getElementById("paginacao").style.display = "none";
+                        rootLottie.innerHTML += `
+						<div class="lottie-container">
+						<lottie-player src="./lottie/error.json" background="transparent"  speed="1"  style="width: 300px; height: 300px;" loop autoplay></lottie-player>
 						</div>
-					</button>
-			`;
-                    });
+					`;
+                    }
+                }
+                else {
+                    if (rootElement) {
+                        document.getElementById("paginacao").style.display = "none";
+                        rootLottie.innerHTML = "";
+                        rootElement.innerHTML = "";
+                        receitasFiltradasporIngredientes.forEach((item) => {
+                            rootElement.innerHTML += `
+						<button class="item-wrapper" id="${item.Name}""=>
+							<img class="imagem" src=${item.urlImage}></img>
+							<div class="text-container">
+								<h3>${item.Name}</h2>
+							</div>
+						</button>
+				`;
+                        });
+                    }
+                }
+            }
+            catch (_b) {
+                if (rootLottie) {
+                    rootLottie.innerHTML = "";
+                    document.getElementById("paginacao").style.display = "none";
+                    rootLottie.innerHTML += `
+					<div class="lottie-container">
+					<lottie-player src="./lottie/error.json" background="transparent"  speed="1"  style="width: 300px; height: 300px;" loop controls autoplay></lottie-player>
+					</div>
+				`;
                 }
             }
         }
-        catch (_a) {
-            if (rootLottie) {
-                rootLottie.innerHTML = "";
-                document.getElementById("paginacao").style.display = "none";
-                rootLottie.innerHTML += `
-				<div class="lottie-container">
-				<lottie-player src="./lottie/error.json" background="transparent"  speed="1"  style="width: 300px; height: 300px;" loop controls autoplay></lottie-player>
-				</div>
-			`;
-            }
-        }
+        // const newBlusas = blusas.filter((blusa) => blusa[filterTypeValue].includes(searchInputValue));
         renderizaButtonContainerReceita();
     });
 }
@@ -295,7 +298,7 @@ function renderizaButtonContainerReceita() {
     const buttonConteinerReceita = Array.from(document.querySelectorAll(".item-wrapper"));
     buttonConteinerReceita.forEach((element) => {
         element.addEventListener("click", ({ target }) => {
-            console.log("iha", element.id), modal(element.id);
+            modal(element.id);
         });
     });
 }

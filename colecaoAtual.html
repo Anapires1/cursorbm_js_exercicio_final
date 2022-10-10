@@ -11,10 +11,14 @@
 		<div class="header-container">
 			<h2 class="title">Chefe.com</h2>
 			<div class="container-button-input">
-				<input placeholder="Pesquise ingredientes" id="input"></input>
+				<input placeholder="Search..." id="input"></input>
+				<select id="filter-type-select" value="tipo-pesquisa">
+					<option value="receita">Recipe</option>
+					<option value="ingrediente">Ingredients</option>
+				</select>
 				<button id="button-search">	<img class="imagem-search" src="images/search.png"></img></button>
 				<a href="./index.html" id="button-voltar-home">Home</a>
-				<a href="./colecaoAtual.html">Receitas</a>
+				<a href="./colecaoAtual.html">Recipe</a>
 			</div>
 		</div>
 		<div id="root"></div>
