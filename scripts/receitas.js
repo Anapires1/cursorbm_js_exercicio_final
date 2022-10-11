@@ -61,7 +61,7 @@ function render() {
                 });
             }
         }
-        catch (_a) {
+        catch (e) {
             if (rootLottie) {
                 document.getElementById("paginacao").style.display = "none";
                 rootLottie.innerHTML = "";
@@ -129,7 +129,7 @@ function pesquisaPorElemento(value) {
                     }
                 }
             }
-            catch (_a) {
+            catch (e) {
                 if (rootLottie) {
                     rootLottie.innerHTML = "";
                     document.getElementById("paginacao").style.display = "none";
@@ -205,7 +205,7 @@ function pesquisaPorElemento(value) {
                     }
                 }
             }
-            catch (_b) {
+            catch (e) {
                 if (rootLottie) {
                     rootLottie.innerHTML = "";
                     document.getElementById("paginacao").style.display = "none";
@@ -217,7 +217,6 @@ function pesquisaPorElemento(value) {
                 }
             }
         }
-        // const newBlusas = blusas.filter((blusa) => blusa[filterTypeValue].includes(searchInputValue));
         renderizaButtonContainerReceita();
     });
 }
@@ -255,6 +254,14 @@ function modal(receitaEscolhida) {
         if (rootElement) {
             rootElement.innerHTML = "";
             document.getElementById("paginacao").style.display = "none";
+            if (rootLottie) {
+                rootLottie.innerHTML = "";
+                rootLottie.innerHTML += `
+				<div class="lottie-container">
+				<lottie-player src="./lottie/loading.json" background="transparent"  speed="3"  style="width: 300px; height: 300px;" loop autoplay></lottie-player>
+				</div>
+				`;
+            }
             const data = yield getData();
             let receitinha = [];
             const receita = yield data.filter((item, index) => {
@@ -262,6 +269,7 @@ function modal(receitaEscolhida) {
                     return (receitinha = [data[index]]);
                 }
             });
+            rootLottie.innerHTML = "";
             rootLottie.innerHTML += `
 			<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 				<div class="modal-dialog">

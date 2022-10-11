@@ -68,7 +68,7 @@ async function render() {
 				`;
 			});
 		}
-	} catch {
+	} catch (e) {
 		if (rootLottie) {
 			document.getElementById("paginacao")!.style.display = "none";
 			rootLottie.innerHTML = "";
@@ -142,7 +142,7 @@ async function pesquisaPorElemento(value: string) {
 					});
 				}
 			}
-		} catch {
+		} catch (e) {
 			if (rootLottie) {
 				rootLottie.innerHTML = "";
 				document.getElementById("paginacao")!.style.display = "none";
@@ -223,7 +223,7 @@ async function pesquisaPorElemento(value: string) {
 					});
 				}
 			}
-		} catch {
+		} catch (e) {
 			if (rootLottie) {
 				rootLottie.innerHTML = "";
 				document.getElementById("paginacao")!.style.display = "none";
@@ -235,7 +235,6 @@ async function pesquisaPorElemento(value: string) {
 			}
 		}
 	}
-	// const newBlusas = blusas.filter((blusa) => blusa[filterTypeValue].includes(searchInputValue));
 
 	renderizaButtonContainerReceita();
 }
@@ -279,6 +278,15 @@ async function modal(receitaEscolhida: string) {
 	if (rootElement) {
 		rootElement.innerHTML = "";
 		document.getElementById("paginacao")!.style.display = "none";
+		if (rootLottie) {
+			rootLottie.innerHTML = "";
+
+			rootLottie.innerHTML += `
+				<div class="lottie-container">
+				<lottie-player src="./lottie/loading.json" background="transparent"  speed="3"  style="width: 300px; height: 300px;" loop autoplay></lottie-player>
+				</div>
+				`;
+		}
 		const data: Receita[] = await getData();
 		let receitinha: Receita[] = [];
 		const receita: Receita[] = await data.filter((item, index) => {
@@ -286,7 +294,7 @@ async function modal(receitaEscolhida: string) {
 				return (receitinha = [data[index]]);
 			}
 		});
-
+		rootLottie!.innerHTML = "";
 		rootLottie!.innerHTML += `
 			<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 				<div class="modal-dialog">
